@@ -1,11 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { fetchWeather, fetchNews, fetchTodo, fetchHydration, sendMorningBrief } from '../services/api';
+import {
+  fetchWeather,
+  fetchNews,
+  fetchTodo,
+  fetchHydration,
+  sendMorningBrief,
+} from '../services/api';
 
-const Dashboard = () => {
-  const [weather, setWeather] = useState('');
-  const [news, setNews] = useState([]);
-  const [todo, setTodo] = useState([]);
-  const [hydration, setHydration] = useState(null);
+import './Dashboard.css';
+
+// Define types for state variables
+interface HydrationData {
+  date: string;
+  intake_ml: number;
+}
+
+const Dashboard: React.FC = () => {
+  const [weather, setWeather] = useState<string>(''); // Weather is a string
+  const [news, setNews] = useState<string[]>([]); // News is an array of strings
+  const [todo, setTodo] = useState<string[]>([]); // To-Do items are strings
+  const [hydration, setHydration] = useState<HydrationData | null>(null); // Hydration can be null or an object
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,41 +54,46 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-4 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Daily Routine Dashboard</h1>
+    <div className="dashboard">
+      <h1 className="dashboard__title">Daily Routine Dashboard</h1>
 
-      <section className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">🌤️ Weather</h2>
-        <p>{weather}</p>
+      <section className="dashboard__section">
+        <h2 className="dashboard__section-title">🌤️ Weather</h2>
+        <p className="dashboard__section-content">{weather}</p>
       </section>
 
-      <section className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">📰 News</h2>
-        <ul className="list-disc ml-6">
+      <section className="dashboard__section">
+        <h2 className="dashboard__section-title">📰 News</h2>
+        <ul className="dashboard__list">
           {news.map((headline, idx) => (
-            <li key={idx}>{headline}</li>
+            <li key={idx} className="dashboard__list-item">
+              {headline}
+            </li>
           ))}
         </ul>
       </section>
 
-      <section className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">✅ To-Do List</h2>
-        <ul className="list-disc ml-6">
+      <section className="dashboard__section">
+        <h2 className="dashboard__section-title">✅ To-Do List</h2>
+        <ul className="dashboard__list">
           {todo.map((task, idx) => (
-            <li key={idx}>{task}</li>
+            <li key={idx} className="dashboard__list-item">
+              {task}
+            </li>
           ))}
         </ul>
       </section>
 
-      <section className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">💧 Hydration</h2>
-        {hydration ? <p>Total Intake: {hydration.intake_ml} ml</p> : <p>Loading hydration data...</p>}
+      <section className="dashboard__section">
+        <h2 className="dashboard__section-title">💧 Hydration</h2>
+        {hydration ? (
+          <p className="dashboard__section-content">Total Intake: {hydration.intake_ml} ml</p>
+        ) : (
+          <p className="dashboard__section-content">Loading hydration data...</p>
+        )}
       </section>
 
-      <button
-        onClick={handleSendBrief}
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-      >
+      <button onClick={handleSendBrief} className="dashboard__button">
         Send Morning Brief
       </button>
     </div>
